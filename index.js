@@ -5,6 +5,10 @@ let stopBtn = document.querySelector('#stop');
 startBtn.addEventListener("click", onStartButtonClick)
 stopBtn.addEventListener("click", onStopButtonClick)
 
+function log(text) {
+  document.querySelector("#log").value += text + "\n"
+}
+
 async function onStartButtonClick() {
   let serviceUuid = document.querySelector('#service').value;
   if (serviceUuid.startsWith('0x')) {
@@ -17,28 +21,28 @@ async function onStartButtonClick() {
   }
 
   try {
-    console.log('Requesting Bluetooth Device...');
+    log('Requesting Bluetooth Device...');
     const device = await navigator.bluetooth.requestDevice({
       optionalServices: [serviceUuid, characteristicUuid],
       acceptAllDevices: true
     });
 
-    console.log('Connecting to GATT Server...');
+    log('Connecting to GATT Server...');
     const server = await device.gatt.connect();
 
-    console.log('Getting Service...');
+    log('Getting Service...');
     const service = await server.getPrimaryService(serviceUuid);
 
-    console.log('Getting Characteristic...');
+    log('Getting Characteristic...');
     myCharacteristic = await service.getCharacteristic(characteristicUuid);
 
     await myCharacteristic.startNotifications();
 
-    console.log('> Notifications started');
+    log('> Notifications started');
     myCharacteristic.addEventListener('characteristicvaluechanged',
       handleNotifications);
   } catch (error) {
-    console.log('Argh! ' + error);
+    log('Argh! ' + error);
   }
 }
 
@@ -46,11 +50,11 @@ async function onStopButtonClick() {
   if (myCharacteristic) {
     try {
       await myCharacteristic.stopNotifications();
-      console.log('> Notifications stopped');
+      log('> Notifications stopped');
       myCharacteristic.removeEventListener('characteristicvaluechanged',
         handleNotifications);
     } catch (error) {
-      console.log('Argh! ' + error);
+      log('Argh! ' + error);
     }
   }
 }
@@ -64,6 +68,7 @@ function handleNotifications(event) {
   for (let i = 0; i < value.byteLength; i++) {
     a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
   }
-  document.querySelector("#log").value = a.join(' ')
-  console.log('> ' + a.join(' '));
+  d = a.join(' ')
+  document.querySelector("#log").value += a.join(' ')
+  log('> ' + a.join(' '));
 }
