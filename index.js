@@ -68,7 +68,6 @@ function handleNotifications(event) {
   for (let i = 0; i < value.byteLength; i++) {
     a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
   }
-  d = a.join(' ')
   document.querySelector("#log").value += a.join(' ')
   log('> ' + a.join(' '));
 }
