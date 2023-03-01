@@ -55,6 +55,10 @@ async function onStartButtonClick() {
   }
 }
 
+function bytes2int16(high, low) {
+  return (low << 8) | high
+}
+
 async function onStopButtonClick() {
   if (myCharacteristic) {
     try {
