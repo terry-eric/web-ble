@@ -39,8 +39,17 @@ async function onStartButtonClick() {
     await myCharacteristic.startNotifications();
 
     log('> Notifications started');
-    myCharacteristic.addEventListener('characteristicvaluechanged',
-      handleNotifications);
+    
+    let Ts = myCharacteristic.addEventListener('characteristicvaluechanged',
+      handleNotifications);;
+    let Timestamp = bytes2int16(Ts[0], Ts[1])
+    let percentage = bytes2int16(Ts[2], Ts[3]) / 10
+    let voltage = bytes2int16(Ts[4], Ts[5]) / 1000
+    let current = bytes2int16(Ts[6], Ts[7]) / 10
+    let status = parseInt(Ts[8])
+    if (status == 2) { current = 0 }
+    console.log(Timestamp, percentage, voltage, current, status)
+    
   } catch (error) {
     log('Argh! ' + error);
   }
@@ -69,5 +78,6 @@ function handleNotifications(event) {
     a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
   }
   // document.querySelector("#log").value += a.join(' ')
+  return a
   log('> ' + a.join(' '));
 }
