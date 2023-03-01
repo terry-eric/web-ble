@@ -9,6 +9,10 @@ function log(text) {
   document.querySelector("#log").value += text + "\n"
 }
 
+function bytes2int16(high, low) {
+  return (low << 8) | high
+}
+
 async function onStartButtonClick() {
   let serviceUuid = document.querySelector('#service').value;
   if (serviceUuid.startsWith('0x')) {
@@ -55,9 +59,6 @@ async function onStartButtonClick() {
   }
 }
 
-function bytes2int16(high, low) {
-  return (low << 8) | high
-}
 
 async function onStopButtonClick() {
   if (myCharacteristic) {
