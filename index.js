@@ -46,7 +46,7 @@ async function onStartButtonClick() {
     
     let Ts = myCharacteristic.addEventListener('characteristicvaluechanged',
       handleNotifications);;
-    if(TS != 0){
+    if(Ts != 0){
       let Timestamp = bytes2int16(Ts[0], Ts[1])
       let percentage = bytes2int16(Ts[2], Ts[3]) / 10
       let voltage = bytes2int16(Ts[4], Ts[5]) / 1000
@@ -54,7 +54,7 @@ async function onStartButtonClick() {
       let status = parseInt(Ts[8])
       if (status == 2) { current = 0 }
       console.log(Timestamp, percentage, voltage, current, status)
-      TS = 0
+      Ts = 0
     }
   } catch (error) {
     log('Argh! ' + error);
