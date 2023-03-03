@@ -43,24 +43,12 @@ async function onStartButtonClick() {
     await myCharacteristic.startNotifications();
 
     log('> Notifications started');
-    myCharacteristic.addEventListener('characteristicvaluechanged',
-    handleNotifications);
-    // let Ts = 
-    // if(Ts != 0){
-    //   let Timestamp = bytes2int16(Ts[0], Ts[1])
-    //   let percentage = bytes2int16(Ts[2], Ts[3]) / 10
-    //   let voltage = bytes2int16(Ts[4], Ts[5]) / 1000
-    //   let current = bytes2int16(Ts[6], Ts[7]) / 10
-    //   let status = parseInt(Ts[8])
-    //   if (status == 2) { current = 0 }
-    //   console.log(Timestamp, percentage, voltage, current, status)
-    //   Ts = 0
-    // }
+    myCharacteristic.addEventListener('characteristicvaluechanged', handleNotifications);
+
   } catch (error) {
     log('Argh! ' + error);
   }
 }
-
 
 async function onStopButtonClick() {
   if (myCharacteristic) {
@@ -85,7 +73,25 @@ function handleNotifications(event) {
   for (let i = 0; i < value.byteLength; i++) {
     a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
   }
+  consolo.log(battery_func(a));
   // document.querySelector("#log").value += a.join(' ')
-  return a
   log('> ' + a.join(' '));
+}
+
+function battery_func(a) {
+  let Timestamp = bytes2int16(a[0], a[1])
+  let percentage = bytes2int16(a[2], a[3]) / 10
+  let voltage = bytes2int16(a[4], a[5]) / 1000
+  let current = bytes2int16(a[6], a[7]) / 10
+  let status = parseInt(a[8])
+  if (status == 2) { current = 0 }
+
+  return {
+    Timestamp: Timestamp,
+    percentage: percentage,
+    voltage: voltage,
+    current: current,
+    status: status
+  }
+
 }
