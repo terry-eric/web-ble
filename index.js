@@ -70,4 +70,35 @@ function handleNotifications(event) {
   }
   // document.querySelector("#log").value += a.join(' ')
   log('> ' + a.join(' '));
+  console.log(battery_func([0x68, 0x96, 0xa0, 0x02, 0xd0, 0x0c, 0x00, 0x80, 0x02]))
 }
+
+
+function bytes2int16(high, low) {
+  return (low << 8) | high
+}
+
+
+function battery_func(a) {
+  let Timestamp = bytes2int16(a[0], a[1])
+  let percentage = bytes2int16(a[2], a[3]) / 10
+  let voltage = bytes2int16(a[4], a[5]) / 1000
+  let current = bytes2int16(a[6], a[7]) / 10
+  let status = parseInt(a[8])
+  if (status == 2) { current = 0 }
+
+  return {
+      Timestamp: Timestamp,
+      percentage: percentage,
+      voltage: voltage,
+      current: current,
+      status: status
+  }
+}
+
+
+// let hi = bytes2int16(0xa0,0x02)
+// console.log(hi);
+// 0x68,0x96,0xa0,0x02,0xd0,0x0c,0x00,0x80,0x02 //battery
+
+
