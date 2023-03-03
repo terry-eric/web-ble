@@ -9,10 +9,6 @@ function log(text) {
   document.querySelector("#log").value += text + "\n"
 }
 
-function bytes2int16(high, low) {
-  return (low << 8) | high
-}
-
 async function onStartButtonClick() {
   let serviceUuid = document.querySelector('#service').value;
   if (serviceUuid.startsWith('0x')) {
@@ -43,8 +39,8 @@ async function onStartButtonClick() {
     await myCharacteristic.startNotifications();
 
     log('> Notifications started');
-    myCharacteristic.addEventListener('characteristicvaluechanged', handleNotifications);
-
+    myCharacteristic.addEventListener('characteristicvaluechanged',
+      handleNotifications);
   } catch (error) {
     log('Argh! ' + error);
   }
@@ -65,7 +61,6 @@ async function onStopButtonClick() {
 
 function handleNotifications(event) {
   let value = event.target.value;
-  console.log(event);
   let a = [];
   // Convert raw data bytes to hex values just for the sake of showing something.
   // In the "real" world, you'd use data.getUint8, data.getUint16 or even
@@ -73,25 +68,6 @@ function handleNotifications(event) {
   for (let i = 0; i < value.byteLength; i++) {
     a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
   }
-  consolo.log(battery_func(a));
   // document.querySelector("#log").value += a.join(' ')
   log('> ' + a.join(' '));
-}
-
-function battery_func(a) {
-  let Timestamp = bytes2int16(a[0], a[1])
-  let percentage = bytes2int16(a[2], a[3]) / 10
-  let voltage = bytes2int16(a[4], a[5]) / 1000
-  let current = bytes2int16(a[6], a[7]) / 10
-  let status = parseInt(a[8])
-  if (status == 2) { current = 0 }
-
-  return {
-    Timestamp: Timestamp,
-    percentage: percentage,
-    voltage: voltage,
-    current: current,
-    status: status
-  }
-
 }
